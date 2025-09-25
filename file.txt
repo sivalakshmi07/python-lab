@@ -1,0 +1,84 @@
+import java.io.*;
+import java.util.Scanner;
+
+class Filed {
+    public static void main(String[] args) {
+        Scanner io = new Scanner(System.in);
+        File file = new File("myfile.txt"); // your file
+
+        while (true) {
+            System.out.println("\n1. Append Text");
+            System.out.println("2. Overwrite File");
+            System.out.println("3. Delete specific text");
+            System.out.println("4. View File Content");
+            System.out.println("5. Exit");
+            System.out.print("Choose an option: ");
+
+            int choice = io.nextInt();
+            io.nextLine(); // consume newline
+
+            try {
+                if (choice == 1) {  // Append Text
+                    System.out.print("Enter text to append: ");
+                    String text = io.nextLine();
+                    FileWriter fw = new FileWriter(file, true); // append = true
+                    fw.write(text + "\n");
+                    fw.close();
+                    System.out.println("Text appended successfully!");
+                } 
+                else if (choice == 2) {  // Overwrite File
+                    System.out.print("Enter new content: ");
+                    String text = io.nextLine();
+                    FileWriter fw = new FileWriter(file, false); // overwrite
+                    fw.write(text + "\n");
+                    fw.close();
+                    System.out.println("File overwritten successfully!");
+                } 
+                else if (choice == 3) {  // Delete specific text
+                    System.out.print("Enter text to delete: ");
+                    String toDelete = io.nextLine();
+
+                    // Read file content
+                    BufferedReader br = new BufferedReader(new FileReader(file));
+                    StringBuilder sb = new StringBuilder();
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        sb.append(line.replace(toDelete, "")).append("\n");
+                    }
+                    br.close();
+
+                    // Rewrite file
+                    FileWriter fw = new FileWriter(file, false);
+                    fw.write(sb.toString());
+                    fw.close();
+                    System.out.println("Text deleted successfully!");
+                } 
+                else if (choice == 4) {  // View File Content
+                    if (file.exists()) {
+                        BufferedReader br = new BufferedReader(new FileReader(file));
+                        String line;
+                        System.out.println("\n--- File Content ---");
+                        while ((line = br.readLine()) != null) {
+                            System.out.println(line);
+                        }
+                        br.close();
+                        System.out.println("--------------------");
+                    } else {
+                        System.out.println("File does not exist.");
+                    }
+                } 
+                else if (choice == 5) {  // Exit
+                    System.out.println("Exiting program...");
+                    break;
+                } 
+                else {
+                    System.out.println("Invalid choice! Try again.");
+                }
+            } catch (IOException e) {
+                System.out.println("Error: " + e.getMessage());
+            }
+        }
+
+        io.close();
+    }
+}
